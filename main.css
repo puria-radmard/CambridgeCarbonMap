@@ -1,6 +1,5 @@
 html {
     display: table;
-    width: 100%;
     color:#ffffff;
     background: #94e79b;
     font-family: sans-serif;
@@ -17,14 +16,15 @@ html, body{
     padding: 0;
 }
 
-div#selection{
-    height: 100%;
+div#selection, div#header{
+    height: 5%;
+    padding-top:0;
 }
 
 div#contactUs{
-    padding-top: 10px;
+    padding-top: 5%;
 }
 
 #mainMap{
-    height: 100px;
+    height: 900px;
 }
