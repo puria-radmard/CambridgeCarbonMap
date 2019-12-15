@@ -1,0 +1,30 @@
+html {
+    display: table;
+    width: 100%;
+    color:#ffffff;
+    background: #94e79b;
+    font-family: sans-serif;
+
+    vertical-align: middle;
+    display: inline;
+    text-align: center;
+}
+
+html, body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div#selection{
+    height: 100%;
+}
+
+div#contactUs{
+    padding-top: 10px;
+}
+
+#mainMap{
+    height: 100px;
+}

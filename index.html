@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="wigth=device-width, initial-scale=1.0">
+        <meta http-equiv="X_UA_Compatible" content="ie=edge">
+        <title> Cambridge Carbon Map</title>
+
+        <link href="main.css" rel="stylesheet" type = "text/css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+                integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+                crossorigin=""/>      
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript">
+            $('input').keypress(function(e) {
+                if (e.which == 13) {
+                    //! says error is here within the $ symbol
+                    $(this).next('input').focus();
+                    e.preventDefault();
+                }
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+                integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+                crossorigin=""></script>
+
+        <!-- make all data -->
+        <script>
+            
+            
+        </script>
+    </head>
+
+    <body>
+        <div id="header">
+            <h1> The Cambridge Carbon Map </h1>
+            <h3> - by the Big Cambridge Climate Conversation team </h3>
+        </div>
+
+        <div id="selection" class="clearfix">
+            <a href="#whyWeCare">Why we care</a>
+            <a href="#contactUs">Get in touch</a>
+        </div>
+
+        <div id="mainMap">
+
+        </div>
+
+        <div class="section" id="whyWeCare">
+            <h2><a name="whyWeCare">Why We Care</a></h2>
+
+            <div class="panel" id="Charts">
+                <div class="chart-container" id="chartCont">
+                    <canvas id="chart"></canvas>
+                </div>
+            </div>
+
+            <script>
+
+                // Design point for later: put in a video for the background of the graphics, of nature
+    
+                const xlabels = [];
+                const ytemps = [];
+                
+                // delay animation until the chart is on screen (top only activated)
+                $(function() {
+                    var oTop = $('#whyWeCare').offset().top - window.innerHeight;
+                    var chartHidden = true;
+                    $(window).scroll(function(){
+                        var pTop = $('body').scrollTop();
+                        if ((pTop > oTop) && (chartHidden)) {
+                            chartHidden = false;
+                            chartMake();
+                        }
+                    });
+                });
+    
+                async function chartMake(){
+                    await getTempData();   // Promise it data
+                    const ctx = document.getElementById('chart').getContext('2d');
+                    ctx.canvas.width = $(window).width() - 400;
+                    console.log($(window).width());
+                    ctx.canvas.height = $(window).height() - 250;
+    
+                    const myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: xlabels,
+                            datasets: [{
+                                label: 'Global Average Temperature',
+                                data: ytemps,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]},
+                        //animationSteps: Math.round(50000000000/17)
+                        });
+                }
+    
+                async function getTempData(){
+                    const response = await fetch('ZonAnn.Ts+dSST.csv');
+                    const data = await response.text();
+                    console.log(data.split(",")[0]);
+    
+                    // splits .csv by new lines, removing the header row
+                    const rows = data.split('\n').slice(1);
+                    rows.forEach(elt =>{
+                        const cols = elt.split(',');
+                        const year = cols[0]; xlabels.push(year);
+                        const temp = cols[1]; ytemps.push(parseFloat(temp)+14);
+                        //console.log(year, temp);
+                    })
+                }
+                Chart.defaults.global.animation.duration = 3000;
+            </script>
+        </div>
+
+        <div class="section" id="contactUs">
+            <h2><a name="whyWeCare">Get In Touch</a></h2>
+            <p>If you have.. yada yada yada<p><br>
+            <b>Tel: +447852101077 &emsp; Email: pr450@cam.ac.uk</b>
+        </div>
+
+        <!-- Smooth scroll (lifted) -->
+        <script>
+            // Select all links with hashes
+            $('a[href*="#"]')
+                // Remove links that don't actually link to anything
+                .not('[href="#"]')
+                .not('[href="#0"]')
+                .click(function(event) {
+                    // On-page links
+                    if (
+                        location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
+                        && 
+                        location.hostname == this.hostname
+                    ) {
+                        // Figure out element to scroll to
+                        var target = $(this.hash);
+                        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                        // Does a scroll target exist?
+                        if (target.length) {
+                            // Only prevent default if animation is actually gonna happen
+                            event.preventDefault();
+                            $('html, body').animate({
+                            scrollTop: target.offset().top
+                            }, 1000, function() {
+                                // Callback after animation
+                                // Must change focus!
+                                var $target = $(target);
+                                $target.focus();
+                                if ($target.is(":focus")) { // Checking if the target was focused
+                                    return false;
+                                } else {
+                                    $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                                    $target.focus(); // Set focus again
+                                };
+                            });
+                        }
+                    }
+                });
+        </script>
+
+        <!-- Main map and API access script-->
+        <script>
+            const mymap = L.map('mainMap').setView([51.505, -0.09], 13);
+            // needs API access!
+        </script>
+
+    </body>
+
+</html>
