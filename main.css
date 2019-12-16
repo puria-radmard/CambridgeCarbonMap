@@ -16,9 +16,15 @@ html, body{
     padding: 0;
 }
 
+h1, h3{
+    margin: 0.5%;
+}
+
 div#selection, div#header{
-    height: 5%;
-    padding-top:0;
+    height: 3%;
+}
+div#selection{
+    padding-top: 3%;
 }
 
 div#contactUs{
@@ -26,5 +32,6 @@ div#contactUs{
 }
 
 #mainMap{
-    height: 900px;
+    height: 85%;
+    padding: 1px;
 }

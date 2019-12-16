@@ -26,6 +26,7 @@
         <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
                 integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
                 crossorigin=""></script>
+        <script src="/js/leaflet-0.7.2/leaflet.ajax.min.js"></script>
 
     </head>
 
@@ -117,7 +118,7 @@
             <b>Tel: +447852101077 &emsp; Email: pr450@cam.ac.uk</b>
         </div>
 
-        <!-- Smooth scroll (lifted) -->
+        <!-- Smooth scroll -->
         <script>
             // Select all links with hashes
             $('a[href*="#"]')
@@ -157,11 +158,84 @@
                 });
         </script>
 
-        <!-- Main map and API access script-->
+        <!-- Main map and API access script -->
         <script>
-            const mymap = L.map('mainMap').setView([51.505, -0.09], 13);
+            const mainMap = L.map('mainMap').setView([52.205, 0.1218], 12.5);
             const attribution = '&copy; <a href="https://www.openstreetmap/copyright">OpenStreeMap</a> contributors';
-            // needs API access!
+            
+            const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            const tiles = L.tileLayer(tileUrl, {attribution});
+            tiles.addTo(mainMap);
+
+            const multiPolygonGeoJSON = ['trinity_testMulti.geojson'];
+            
+            multiPolygonGeoJSON.forEach(function(addr, index){
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', addr);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.responseType = 'json';
+                xhr.onload = function() {
+                    if (xhr.status !== 200) return
+                        L.geoJSON(xhr.response,
+                        {
+                        onEachFeature: function(feature, layer) {
+                            var popup = new L.Popup({
+                                autoPan: false,
+                                keepInView: true,
+                                // NEEDS CONTENT
+                            }).setContent(feature.properties.name);
+                            layer.bindPopup(popup);
+
+                            layer.on('mouseover', function (e) {
+                                this.setStyle({ 'fillColor': '#ff0000'});
+                                var popup = e.target.getPopup();
+                                popup.setLatLng(e.latlng).openOn(mainMap);
+                            });
+
+                            layer.on('mouseout', function (e) {
+                                this.setStyle({'fillColor': '#0000ff'});
+                                e.target.closePopup();
+                            });
+
+                            layer.on('mousemove', function (e) {
+                                e.target.closePopup();
+                                var popup = e.target.getPopup();
+                                popup.setLatLng(e.latlng).openOn(mainMap);
+                            });
+
+                            layer.on('click', function () {
+                            // Let's say you've got a property called url in your geojsonfeature:
+                            window.location = feature.properties.url;
+                            
+                            });
+                        }
+                        }
+                        ).addTo(mainMap);
+                    };
+                xhr.send();
+            });
+
+            // var geojsonTrinity = new L.geoJSON.AJAX("trinity_testMulti.geojson");
+
+            // var layerTrinity = new L.geoJSON(geojsonTrinity,{
+            //     onEachFeature: function(feature, layer) {
+            //         layer.on('mouseover', function () {
+            //         this.setStyle({
+            //             'fillColor': '#0000ff'
+            //         });
+            //         });
+            //         layer.on('mouseout', function () {
+            //         this.setStyle({
+            //             'fillColor': '#ff0000'
+            //         });
+            //         });
+            //         layer.on('click', function () {
+            //         // Let's say you've got a property called url in your geojsonfeature:
+            //         window.location = feature.properties.url;
+            //         });
+            //     }
+            //     }).addTo(mainMap);
+
         </script>
 
     </body>
