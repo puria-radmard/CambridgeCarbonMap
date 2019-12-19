@@ -12,7 +12,12 @@
         "name": "Trinity College",
         "operator": "Trinity College (University of Cambridge)",
         "ref": "TRIN/BURR",
-        "url": "Trinity.html"
+        "url": "Trinity.html",
+        "a": "5",
+        "b": "4",
+        "c": "6",
+        "d": "10",
+        "e": "1"
       },
       "geometry": {
         "type": "MultiPolygon",

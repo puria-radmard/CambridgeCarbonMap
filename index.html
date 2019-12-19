@@ -31,17 +31,19 @@
     </head>
 
     <body>
+        
         <div id="header">
-            <h1> The Cambridge Carbon Map </h1>
-            <h3> - by the Big Cambridge Climate Conversation team </h3>
+                <h1> The Cambridge Carbon Map </h1>
+                <h3> - by the Big Cambridge Climate Conversation team </h3>
         </div>
 
         <div id="selection" class="section">
-            <a href="#whyWeCare">Why we care</a>
-            <a href="#contactUs">Get in touch</a>
+                <a href="#whyWeCare">Why we care</a>
+                <a href="#contactUs">Get in touch</a>
         </div>
-
+        
         <div id="mainMap"></div>
+        <div id="radarCont" class="chart-container" style="display: none"><canvas id="radar"></canvas></div>
 
         <div class="section" id="whyWeCare">
             <h2><a name="whyWeCare">Why We Care</a></h2>
@@ -90,7 +92,6 @@
                                 borderColor: 'rgba(255, 99, 132, 1)',
                                 borderWidth: 1
                             }]},
-                        //animationSteps: Math.round(50000000000/17)
                         });
                 }
     
@@ -179,35 +180,65 @@
                         L.geoJSON(xhr.response,
                         {
                         onEachFeature: function(feature, layer) {
+
+                            var lock = false;
+                            var radar_div = document.getElementById("radar");
+                            var radar_dims = radar_div.getContext('2d');
+                            
+                            // // Hides radar on actual page
+                            radar_dims.canvas.width = 1000;
+                            radar_dims.canvas.height = 1000;
+
+                            const radarChart = new Chart(radar_div, {
+                                type: 'radar',
+                                data: {
+                                    labels: ['a','b','c','d','e'],
+                                    datasets: [{
+                                        label: feature.properties.name,
+                                        data: [feature.properties.a, feature.properties.b, feature.properties.c, feature.properties.d, feature.properties.e],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1
+                                    }]},
+                                });
+
                             var popup = new L.Popup({
                                 autoPan: false,
                                 keepInView: true,
-                                // NEEDS CONTENT
                             }).setContent(feature.properties.name);
                             layer.bindPopup(popup);
+
+                            layer.on('click', function (e) {
+                                lock = !lock;
+                                if(lock){
+                                    // Open side popup, need to change locking mechanism and chart div also
+                                }
+                                else{
+                                    popup.setContent(feature.properties.name);
+                                };
+                            });
 
                             layer.on('mouseover', function (e) {
                                 this.setStyle({ 'fillColor': '#ff0000'});
                                 var popup = e.target.getPopup();
                                 popup.setLatLng(e.latlng).openOn(mainMap);
+                                popup.setContent(feature.properties.name);
                             });
 
                             layer.on('mouseout', function (e) {
+                                lock = false
                                 this.setStyle({'fillColor': '#0000ff'});
                                 e.target.closePopup();
                             });
 
                             layer.on('mousemove', function (e) {
-                                e.target.closePopup();
-                                var popup = e.target.getPopup();
-                                popup.setLatLng(e.latlng).openOn(mainMap);
+                                if(!lock){
+                                    e.target.closePopup();
+                                    var popup = e.target.getPopup();
+                                    popup.setLatLng(e.latlng).openOn(mainMap);
+                                }
                             });
 
-                            layer.on('click', function () {
-                            // Let's say you've got a property called url in your geojsonfeature:
-                            window.location = feature.properties.url;
-                            
-                            });
                         }
                         }
                         ).addTo(mainMap);
