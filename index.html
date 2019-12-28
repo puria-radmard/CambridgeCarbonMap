@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8"/>
-        <meta name="viewport" content="wigth=device-width, initial-scale=1.0">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <meta http-equiv="X_UA_Compatible" content="ie=edge">
         <title> Cambridge Carbon Map</title>
 
@@ -42,8 +42,8 @@
                 <a href="#contactUs">Get in touch</a>
         </div>
         
-        <div id="mainMap"></div>
-        <div id="radarCont" class="chart-container" style="display: none"><canvas id="radar"></canvas></div>
+        <div id="mainMap">
+        </div>
 
         <div class="section" id="whyWeCare">
             <h2><a name="whyWeCare">Why We Care</a></h2>
@@ -114,7 +114,7 @@
         </div>
 
         <div class="section" id="contactUs">
-            <h2><a name="whyWeCare">Get In Touch</a></h2>
+            <h2><a name="contactUs">Get In Touch</a></h2>
             <p>If you have.. yada yada yada<p><br>
             <b>Tel: +447852101077 &emsp; Email: pr450@cam.ac.uk</b>
         </div>
@@ -168,82 +168,104 @@
             const tiles = L.tileLayer(tileUrl, {attribution});
             tiles.addTo(mainMap);
 
-            const multiPolygonGeoJSON = ['trinity_testMulti.geojson'];
+            const multiPolygonGeoJSON = ['trinity_testMulti.geojson', 'jesus_testMulti.geojson'];
+
+            var xhr = [];
+            var lock = false;
+
+            mainMap.on('click', function(e) {        
+                    lock = !lock       
+                });
             
             multiPolygonGeoJSON.forEach(function(addr, index){
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', addr);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.responseType = 'json';
-                xhr.onload = function() {
-                    if (xhr.status !== 200) return
-                        L.geoJSON(xhr.response,
+                
+                xhr[index] = new XMLHttpRequest();
+                xhr[index].open('GET', addr, true);
+                xhr[index].setRequestHeader('Content-Type', 'application/json');
+                xhr[index].responseType = 'json';
+                console.log(addr)
+                
+                xhr[index].onload = function() {
+                    
+                    if (xhr[index].status !== 200) return
+                        L.geoJSON(xhr[index].response,
                         {
                         onEachFeature: function(feature, layer) {
 
-                            var lock = false;
-                            var radar_div = document.getElementById("radar");
-                            var radar_dims = radar_div.getContext('2d');
-                            
-                            // // Hides radar on actual page
-                            radar_dims.canvas.width = 1000;
-                            radar_dims.canvas.height = 1000;
+                            var div = document.createElement('canvas');
+                            div.id = feature.properties.name;
+                            console.log(document.getElementById(feature.properties.name));
+                            document.getElementsByTagName('body')[0].appendChild(div);
 
-                            const radarChart = new Chart(radar_div, {
-                                type: 'radar',
-                                data: {
-                                    labels: ['a','b','c','d','e'],
-                                    datasets: [{
-                                        label: feature.properties.name,
-                                        data: [feature.properties.a, feature.properties.b, feature.properties.c, feature.properties.d, feature.properties.e],
-                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: 'rgba(255, 99, 132, 1)',
-                                        borderWidth: 1
-                                    }]},
-                                });
+                            function chartMake(){
+                                const ctx = document.getElementById(feature.properties.name).getContext('2d');
+                                //ctx.canvas.width = 500;
+                                //ctx.canvas.height = 200;
+
+                                const radarChart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels:  [1,2,3,4,5,6,7,8],                     // Time history
+                                        datasets: [{
+                                            label: "${feature.properties.name} Gas Usage",                                       
+                                            data: feature.properties.history,
+                                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                            borderColor: 'rgba(255, 99, 132, 1)',
+                                            borderWidth: 1
+                                        }]},
+                                    });      
+                                                          
+                            };
+
+                            chartMake();
 
                             var popup = new L.Popup({
                                 autoPan: false,
                                 keepInView: true,
+                                //maxWidth: 'auto',
                             }).setContent(feature.properties.name);
                             layer.bindPopup(popup);
 
+
                             layer.on('click', function (e) {
                                 lock = !lock;
-                                if(lock){
-                                    // Open side popup, need to change locking mechanism and chart div also
+                                console.log(lock);
+                                if (lock){
+                                    mainMap.closePopup();
+                                    popup.setContent(div);
+                                    popup.setLatLng(e.latlng).openOn(mainMap);
                                 }
                                 else{
                                     popup.setContent(feature.properties.name);
-                                };
+                                }
                             });
 
                             layer.on('mouseover', function (e) {
                                 this.setStyle({ 'fillColor': '#ff0000'});
-                                var popup = e.target.getPopup();
-                                popup.setLatLng(e.latlng).openOn(mainMap);
-                                popup.setContent(feature.properties.name);
+                                if (!lock){
+                                    popup.setLatLng(e.latlng).openOn(mainMap);
+                                    popup.setContent(feature.properties.name);
+                                };
                             });
 
                             layer.on('mouseout', function (e) {
-                                lock = false
                                 this.setStyle({'fillColor': '#0000ff'});
-                                e.target.closePopup();
+                                if(!lock){
+                                    mainMap.closePopup();
+                                }
                             });
 
                             layer.on('mousemove', function (e) {
                                 if(!lock){
-                                    e.target.closePopup();
-                                    var popup = e.target.getPopup();
+                                    mainMap.closePopup();
                                     popup.setLatLng(e.latlng).openOn(mainMap);
                                 }
                             });
 
                         }
-                        }
-                        ).addTo(mainMap);
+                        }).addTo(mainMap);
                     };
-                xhr.send();
+                xhr[index].send();
             });
 
         </script>

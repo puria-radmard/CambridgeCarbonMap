@@ -11,13 +11,9 @@
         "amenity": "university",
         "name": "Trinity College",
         "operator": "Trinity College (University of Cambridge)",
-        "ref": "TRIN/BURR",
+        "ref": "TRIN",
         "url": "Trinity.html",
-        "a": "5",
-        "b": "4",
-        "c": "6",
-        "d": "10",
-        "e": "1"
+        "history": [1, 2, 5, 3 , 4, 6, 2, 9]
       },
       "geometry": {
         "type": "MultiPolygon",

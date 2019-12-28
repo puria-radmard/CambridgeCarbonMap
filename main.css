@@ -27,11 +27,23 @@ div#selection{
     padding-top: 3%;
 }
 
+
+div#whyWeCare{
+    padding-top: 5;
+}
+
+
 div#contactUs{
     padding-top: 5%;
 }
 
 #mainMap{
     height: 85%;
-    padding: 1px;
+    width: 100%;
+    padding: 0;
+}
+
+.popupChart {
+    width: 500px;
+    height: 200px;
 }
