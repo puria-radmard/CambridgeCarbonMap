@@ -194,13 +194,11 @@
 
                             var div = document.createElement('canvas');
                             div.id = feature.properties.name;
-                            console.log(document.getElementById(feature.properties.name));
                             document.getElementsByTagName('body')[0].appendChild(div);
+                            console.log(document.getElementById(feature.properties.name));
 
                             function chartMake(){
                                 const ctx = document.getElementById(feature.properties.name).getContext('2d');
-                                //ctx.canvas.width = 500;
-                                //ctx.canvas.height = 200;
 
                                 const radarChart = new Chart(ctx, {
                                     type: 'line',
@@ -222,14 +220,13 @@
                             var popup = new L.Popup({
                                 autoPan: false,
                                 keepInView: true,
-                                //maxWidth: 'auto',
-                            }).setContent(feature.properties.name);
+                            }).setContent(div);
                             layer.bindPopup(popup);
 
+                            mainMap.closePopup();
 
                             layer.on('click', function (e) {
                                 lock = !lock;
-                                console.log(lock);
                                 if (lock){
                                     mainMap.closePopup();
                                     popup.setContent(div);
@@ -271,5 +268,6 @@
         </script>
 
     </body>
+
 
 </html>

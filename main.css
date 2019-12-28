@@ -28,10 +28,6 @@ div#selection{
 }
 
 
-div#whyWeCare{
-    padding-top: 5;
-}
-
 
 div#contactUs{
     padding-top: 5%;
@@ -40,7 +36,6 @@ div#contactUs{
 #mainMap{
     height: 85%;
     width: 100%;
-    padding: 0;
 }
 
 .popupChart {
