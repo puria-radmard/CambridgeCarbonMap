@@ -259,10 +259,14 @@
                                 }
                             });
 
+                            popup.setLatLng([0,0]).openOn(mainMap);
+                            mainMap.closePopup();
                         }
                         }).addTo(mainMap);
                     };
+
                 xhr[index].send();
+
             });
 
         </script>
