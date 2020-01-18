@@ -34,7 +34,7 @@
         
         <div id="header">
                 <h1> The Cambridge Carbon Map </h1>
-                <!-- <h3> - by the Big Cambridge Climate Conversation team </h3> -->
+                <!-- <h3> - by the Big Cambridge Climate Change Conversation team </h3> -->
         </div>
 
         <div id="selection" class="section">
@@ -93,12 +93,11 @@
                                 borderWidth: 1
                             }]},
                         });
-                }
+                };
     
                 async function getTempData(){
                     const response = await fetch('ZonAnn.Ts+dSST.csv');
                     const data = await response.text();
-                    console.log(data.split(",")[0]);
     
                     // splits .csv by new lines, removing the header row
                     const rows = data.split('\n').slice(1);
@@ -109,7 +108,9 @@
                         //console.log(year, temp);
                     })
                 }
+
                 Chart.defaults.global.animation.duration = 3000;
+
             </script>
         </div>
 
@@ -198,9 +199,10 @@
                             console.log(document.getElementById(feature.properties.name));
 
                             function chartMake(){
-                                const ctx = document.getElementById(feature.properties.name).getContext('2d');
+                                const canv = document.getElementById(feature.properties.name)
+                                const ctx = canv.getContext('2d');
 
-                                const radarChart = new Chart(ctx, {
+                                const gasChart = new Chart(ctx, {
                                     type: 'line',
                                     data: {
                                         labels:  [1,2,3,4,5,6,7,8],                     // Time history
@@ -212,6 +214,10 @@
                                             borderWidth: 1
                                         }]},
                                     });      
+                                
+                                canv.addEventListener('click', function(){
+                                    window.location = "Trinity.html"
+                                }, false);
                                                           
                             };
 

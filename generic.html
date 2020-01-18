@@ -41,86 +41,9 @@
     <a href="#contactUs">Get in touch</a>
 </div>
 
-<div class = "dashboard" id = "Charts">
+<div id="gasmeter">
 
-    <table class="fixed" align="centre">
-        <tr>
-            <td>
-                    <div class="chart-container-grid" id="gasmeterchart">
-                        <canvas id="gasmeter"></canvas>
-                    </div>
-            </td>
-            <td>
-                    <div class="chart-container-grid" id="elecmeterchart" style="text-align: center">
-                        Coming soon: Electricity metering!
-                    </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                    <div class="chart-container-grid" id="watermeterchart" style="text-align: center">
-                        Coming soon: Water metering!
-                    </div>
-            </td>
-            <td>
-                    <div class="chart-container-grid" id="wastetracker" style="text-align: center">
-                        Coming soon: Tracking waste!
-                    </div>
-            </td>
-        </tr>
-    </table>
-
-    <script>
-
-        // Design point for later: put in a video for the background of the graphics, of nature
-
-        const xlabels = [];
-        const ytemps = [];
-
-        chartMake();
-
-        async function chartMake(){
-            await getTempData();                                                // Promise it data
-            const ctx = document.getElementById('gasmeter').getContext('2d');
-            ctx.canvas.width = $(window).width() * 0.45;
-            ctx.canvas.height = $(window).height() * 0.3;
-
-            const myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: xlabels,
-                    datasets: [{
-                        label: 'Global Average Temperature',
-                        data: ytemps,
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]},
-                    
-                responsive : true,
-                maintainAspectRatio: false
-                    
-                });
-        };
-        
-        async function getTempData(){
-            const response = await fetch('ZonAnn.Ts+dSST.csv');
-            const data = await response.text();
-
-            // splits .csv by new lines, removing the header row
-            const rows = data.split('\n').slice(1);
-            rows.forEach(elt =>{
-                const cols = elt.split(',');
-                const year = cols[0]; xlabels.push(year);
-                const temp = cols[1]; ytemps.push(parseFloat(temp)+14);
-            })
-        }
-
-        //Chart.defaults.global.animation.duration = 3000;
-
-    </script>
 </div>
-
 
 
 <div class="section" id="contactUs">
