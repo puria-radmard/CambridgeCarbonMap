@@ -1,8 +1,7 @@
 html {
     display: table;
-    color:#ffffff;
-    background: #94e79b;
-    font-family: sans-serif;
+    
+    font-family: 'Oswald', sans-serif;
 
     vertical-align: middle;
     display: inline;
@@ -16,6 +15,10 @@ html, body{
     padding: 0;
 }
 
+header{
+    overflow: hidden;
+}
+
 h1, h3{
     margin: 0.5%;
 }
@@ -24,7 +27,7 @@ div#selection, div#header{
     height: 3%;
 }
 div#selection{
-    padding-top: 3%;
+    padding-top: 3.2%;
 }
 
 div#contactUs{
@@ -51,4 +54,13 @@ table.fixed{
     height: 30%;
     text-align: center;
     vertical-align: middle;
+}
+
+img.logo{
+    float:left;
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    height: 100px;
+    width: 100px;
 }
