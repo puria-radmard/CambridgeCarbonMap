@@ -2,14 +2,13 @@ from collections import deque
 from produce_number import main as produce_number
 import pandas as pd
 import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 import os
-path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap"
+path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python"
 os.chdir(path)
 cwd = os.getcwd()
 print(cwd)
+fileName = "image.jpg"
 
 maxtime = 100
 
@@ -49,22 +48,28 @@ class Monitor(object):
 monitor = Monitor(5)
 
 for i in range(maxtime): monitor.memory_grad.append(0)
-
-class MyHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        print(f'event type: {event.event_type}  path : {event.src_path}')
+#produce_number("image.jpg")
 
 while True:
-    event_handler = MyHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path='/data/', recursive=False)
-    observer.start()
+    print(monitor.get_last_gradient())
+    prevTime = os.path.getatime(fileName)
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+    # Watch for new image.jpg
+    while os.path.getatime(fileName) == prevTime:
+        pass
+
+    # Classifying image
+    new_absl = produce_number("image.jpg")
+
+    # store_ref new value
+    print(new_absl)
+    monitor.store_value(new_absl)
+
+    # get_last_gradient
+    monitor.get_last_gradient()
+
+    # change csv
+    graphing = pd.DataFrame(index=times, data= init_val)
+    graphing.to_csv("graphing.csv")
 
     pass

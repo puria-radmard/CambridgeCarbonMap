@@ -6,7 +6,7 @@
 """Sample prediction script for TensorFlow 2.x."""
 
 import os
-path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python\\model_dir"
+path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python"
 os.chdir(path)
 cwd = os.getcwd()
 print(cwd)
@@ -17,8 +17,8 @@ import numpy as np
 from PIL import Image
 from object_detection import ObjectDetection
 
-MODEL_FILENAME = 'model.pb'
-LABELS_FILENAME = 'labels.txt'
+MODEL_FILENAME = 'model_dir\\model.pb'
+LABELS_FILENAME = 'model_dir\\labels.txt'
 
 class TFObjectDetection(ObjectDetection):
     """Object Detection class for TensorFlow"""
@@ -56,16 +56,16 @@ def main(image_filename):
     print(predictions)
     
     list_of_digits = [i["tagName"] for i in predictions]
-    string_results = "".join(list_of_digits)
-    result = int(string_results) / 10
+    string_results = "".join(list_of_digits) + "0"
+    result = int(string_results) / 100
 
     print(result)
+    return result
 
 
-
-if __name__ == '__main__':
+#if __name__ == '__main__':
     #if len(sys.argv) <= 1:
     #    print('USAGE: {} image_filename'.format(sys.argv[0]))
     #else:
     #    main(sys.argv[1])
-    main("2019-12-10-1440.png")
+    #main("model_dir\\2019-12-10-1440.png")
