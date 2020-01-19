@@ -6,7 +6,7 @@
 """Sample prediction script for TensorFlow 2.x."""
 
 import os
-path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python"
+path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\MLsec"
 os.chdir(path)
 cwd = os.getcwd()
 print(cwd)

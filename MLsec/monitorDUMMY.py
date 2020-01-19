@@ -31,9 +31,13 @@ class Monitor(object):
         self.dt          = dt
         self.memory      = deque(maxlen = maxtime)
         self.memory_grad = deque(maxlen = maxtime)
+        self.memory.append(0)
 
     def push(self, result):
-        self.memory.append(result)
+        if result < self.memory[-1]:
+            self.memory.append(self.memory[-1] + self.get_last_gradient() * self.dt)
+        else:
+            self.memory.append(result)
         
     def push_grad(self, gradient):
         self.memory_grad.append(gradient)
@@ -41,10 +45,12 @@ class Monitor(object):
     def get_gradient(self):
         if len(self.memory) < 2:
             return 0
+
         if len(self.memory) == 2:
             return (self.memory[-1] - self.memory[-2])/self.dt
         
-        return (self.memory[-1] - self.memory[-3])/(2 * self.dt)
+        grad = (self.memory[-1] - self.memory[-3])/(2 * self.dt)
+        return grad
     
     def store_value(self, result):
         self.push(result)
@@ -52,7 +58,6 @@ class Monitor(object):
         
     def get_last_gradient(self):
         return self.memory_grad[-1]
-
 
 monitor = Monitor(5)
 
