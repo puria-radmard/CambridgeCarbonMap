@@ -1,0 +1,55 @@
+html {
+    display: table;
+    color:#94e79b;
+    background: #ffffff;
+    font-family: sans-serif;
+
+    vertical-align: middle;
+    display: inline;
+    text-align: center;
+}
+
+html, body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+h1, h3{
+    margin: 0.5%;
+}
+
+div#selection, div#header{
+    height: 3%;
+}
+div#selection{
+    padding-top: 3%;
+}
+
+div#contactUs{
+    padding-top: 5%;
+}
+
+#mainMap{
+    height: 85%;
+    width: 100%;
+}
+
+#gasmeterpanel{
+    height: 40%;
+    width: 40%
+}
+
+table.fixed{
+    table-layout:fixed;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart-container-grid{
+    height: 30%;
+    text-align: center;
+    vertical-align: middle;
+}

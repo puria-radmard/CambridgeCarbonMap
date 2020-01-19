@@ -7,7 +7,7 @@
         <meta http-equiv="X_UA_Compatible" content="ie=edge">
         <title> Cambridge Carbon Map</title>
 
-        <link href="main.css" rel="stylesheet" type = "text/css">
+        <link href="sideting.css" rel="stylesheet" type = "text/css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
                 integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
                 crossorigin=""/>      
@@ -30,15 +30,15 @@
 
     </head>
 
-<body>
+<body class ="white">
     <div id="header">
         <h1> The Cambridge Carbon Map </h1>
         <!-- <h3> - by the Big Cambridge Climate Conversation team </h3> -->
 </div>
 
 <div id="selection" class="section">
-    <a href="index.html">Home</a>
-    <a href="#contactUs">Get in touch</a>
+    <a href="index.html" class = "white">Home</a>
+    <a href="#contactUs" class = "white">Get in touch</a>
 </div>
 
 <div class = "dashboard" id = "Charts">
@@ -52,25 +52,24 @@
             </td>
             <td>
                     <div class="chart-container-grid" id="elecmeterchart" style="text-align: center">
-                        Coming soon: Electricity metering!
+                        <img src="images/electricity.png" alt="Electricity" style="width:854px;height:279px;">
                     </div>
             </td>
         </tr>
         <tr>
             <td>
                     <div class="chart-container-grid" id="watermeterchart" style="text-align: center">
-                        Coming soon: Water metering!
+                        <img src="images/water.png" alt="Water" style="width:854px;height:279px;">
                     </div>
             </td>
             <td>
                     <div class="chart-container-grid" id="wastetracker" style="text-align: center">
-                        Coming soon: Tracking waste!
+                        <img src="images/waste.png" alt="Waste" style="width:854px;height:279px;">
                     </div>
             </td>
         </tr>
     </table>
 
-    
     <script>
 
         // Design point for later: put in a video for the background of the graphics, of nature

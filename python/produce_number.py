@@ -4,6 +4,13 @@
 # 3. pass the image to network and do inference
 # (4. if inference speed is too slow for you, try to make w' x h' smaller, which is defined with DEFAULT_INPUT_SIZE (in object_detection.py or ObjectDetection.cs))
 """Sample prediction script for TensorFlow 2.x."""
+
+import os
+path = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python\\model_dir"
+os.chdir(path)
+cwd = os.getcwd()
+print(cwd)
+
 import sys
 import tensorflow as tf
 import numpy as np
@@ -47,6 +54,13 @@ def main(image_filename):
     image = Image.open(image_filename)
     predictions = od_model.predict_image(image)
     print(predictions)
+    
+    list_of_digits = [i["tagName"] for i in predictions]
+    string_results = "".join(list_of_digits)
+    result = int(string_results) / 10
+
+    print(result)
+
 
 
 if __name__ == '__main__':
@@ -54,4 +68,4 @@ if __name__ == '__main__':
     #    print('USAGE: {} image_filename'.format(sys.argv[0]))
     #else:
     #    main(sys.argv[1])
-    main()
+    main("2019-12-10-1440.png")
