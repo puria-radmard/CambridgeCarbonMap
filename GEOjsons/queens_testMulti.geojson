@@ -7,13 +7,8 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/29205726",
-        "landuse": "recreation_ground",
         "name": "Queens' College",
-        "operator": "Queens' College (University of Cambridge)",
-        "ref": "QUEENS/SPORT",
-        "sport": "multi",
-        "history": [1, 2, 5, 3 , 4, 6, 2, 9]
+        "data": "queenscollege.csv"
       },
       "geometry": {
         "type": "MultiPolygon",

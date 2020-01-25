@@ -7,13 +7,8 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/4260517",
-        "amenity": "university",
         "name": "Jesus College",
-        "operator": "Jesus College (University of Cambridge)",
-        "ref": "JESUS",
-        "url": "Jesus.html",
-        "history": [0, 3, 4, 6 , 5, 5, 4, 7]
+        "data": "jesuscollege.csv"
       },
       "geometry": {
         "type": "MultiPolygon",

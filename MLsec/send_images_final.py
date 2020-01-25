@@ -15,14 +15,15 @@ camlist = pygame.camera.list_cameras()
 
 cam = pygame.camera.Camera(camlist[0], (width, height))
 
+
+# Will have to be changed, advice from JA and HH
+
 def createClient(server, port, user):
     ssh = paramiko.SSHClient()
     ssh_key = paramiko.RSAKey.from_private_key_file("/home/pi/.ssh/id_rsa")
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(server, username=user, pkey=ssh_key)
     return ssh
-
-
 
 server = "172.20.2.117"
 port = "22"
@@ -31,10 +32,12 @@ file = "image.jpg"
 enddir = "C:\\Users\\puria\\source\\repos\\puria-radmard\\CambridgeCarbonMap\\python"
 recursive = False
 
+org_name = "trinitycollege"
+
 while True:
     cam.start()
     image = cam.get_image()
-    pygame.image.save(image, "image.jpg")
+    pygame.image.save(image, "{}.jpg".format(org_name))
     cam.stop()
 
     time.sleep(10)

@@ -7,13 +7,8 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/4157944",
-        "amenity": "university",
         "name": "Trinity College",
-        "operator": "Trinity College (University of Cambridge)",
-        "ref": "TRIN",
-        "url": "Trinity.html",
-        "history": [1, 2, 5, 3 , 4, 6, 2, 9]
+        "data": "trinitycollege.csv"
       },
       "geometry": {
         "type": "MultiPolygon",
