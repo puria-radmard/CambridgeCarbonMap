@@ -8,7 +8,7 @@
       "type": "Feature",
       "properties": {
         "name": "Jesus College",
-        "data": "jesuscollege.csv"
+        "id": "uk.ac.cam.jesus"
       },
       "geometry": {
         "type": "MultiPolygon",

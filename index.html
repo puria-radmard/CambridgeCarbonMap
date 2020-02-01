@@ -47,82 +47,12 @@
         <img src="images/logo.png" class="logo" alt="B4C">
 
         <div id="selection" class="section">
-                <a href="#whyWeCare">Why we care</a>
                 <a href="#contactUs">Get in touch</a>
         </div>
         
         <div id="mainMap">
         </div>
 
-        <div class="section" id="whyWeCare">
-            <h2><a name="whyWeCare">Why We Care</a></h2>
-
-            <div class="panel" id="Charts">
-                <div class="chart-container" id="chartCont">
-                    <canvas id="chart"></canvas>
-                </div>
-            </div>
-
-            <script>
-
-                // Design point for later: put in a video for the background of the graphics, of nature
-    
-                const xlabels = [];
-                const ytemps = [];
-                
-                // delay animation until the chart is on screen (top only activated)
-                $(function() {
-                    var oTop = $('#whyWeCare').offset().top - window.innerHeight;
-                    var chartHidden = true;
-                    $(window).scroll(function(){
-                        var pTop = $('body').scrollTop();
-                        if ((pTop > oTop) && (chartHidden)) {
-                            chartHidden = false;
-                            chartMake();
-                        }
-                    });
-                });
-
-    
-                async function chartMake(){
-                    await getTempData();   // Promise it data
-                    const ctx = document.getElementById('chart').getContext('2d');
-                    ctx.canvas.width = $(window).width() - 400;
-                    console.log($(window).width());
-                    ctx.canvas.height = $(window).height() - 250;
-    
-                    const myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: xlabels,
-                            datasets: [{
-                                label: 'Global Average Temperature',
-                                data: ytemps,
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1
-                            }]},
-                        });
-                };
-    
-                async function getTempData(){
-                    const response = await fetch('ZonAnn.Ts+dSST.csv');
-                    const data = await response.text();
-    
-                    // splits .csv by new lines, removing the header row
-                    const rows = data.split('\n').slice(1);
-                    rows.forEach(elt =>{
-                        const cols = elt.split(',');
-                        const year = cols[0]; xlabels.push(year);
-                        const temp = cols[1]; ytemps.push(parseFloat(temp)+14);
-                        //console.log(year, temp);
-                    })
-                }
-
-                Chart.defaults.global.animation.duration = 3000;
-
-            </script>
-        </div>
 
         <div class="section" id="contactUs">
             <h2><a name="contactUs">Get In Touch</a></h2>
@@ -208,7 +138,12 @@
                             document.getElementsByTagName('body')[0].appendChild(div);
                             console.log(document.getElementById(feature.properties.name));
 
-                            function chartMake(){
+                            
+
+                            // This is the old graph popup, with a link to a specific college page for graphs
+
+                            /* function chartMake(){
+
                                 const canv = document.getElementById(feature.properties.name)
                                 const ctx = canv.getContext('2d');
 
@@ -231,7 +166,8 @@
                                                           
                             };
 
-                            chartMake();
+                            chartMake();        */
+
 
                             var popup = new L.Popup({
                                 autoPan: false,
