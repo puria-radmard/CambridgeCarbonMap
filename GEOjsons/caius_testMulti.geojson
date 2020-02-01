@@ -8,7 +8,7 @@
       "type": "Feature",
       "properties": {
         "name": "Gonville & Caius College",
-        "data": "gonvilleandcaiuscollege.csv"
+        "id": "uk.ac.cam.cai"
       },
       "geometry": {
         "type": "MultiPolygon",

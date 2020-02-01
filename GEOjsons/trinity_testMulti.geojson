@@ -8,7 +8,7 @@
       "type": "Feature",
       "properties": {
         "name": "Trinity College",
-        "data": "trinitycollege.csv"
+        "id": "uk.ac.cam.trin"
       },
       "geometry": {
         "type": "MultiPolygon",

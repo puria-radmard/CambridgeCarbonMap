@@ -8,7 +8,7 @@
       "type": "Feature",
       "properties": {
         "name": "Queens' College",
-        "data": "queenscollege.csv"
+        "id": "uk.ac.cam.queens"
       },
       "geometry": {
         "type": "MultiPolygon",

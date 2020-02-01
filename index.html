@@ -109,10 +109,16 @@
             const tiles = L.tileLayer(tileUrl, {attribution});
             tiles.addTo(mainMap);
 
-            const multiPolygonGeoJSON = ['trinity_testMulti.geojson', 'jesus_testMulti.geojson', 'queens_testMulti.geojson', 'kings_testMulti.geojson', 'caius_testMulti.geojson', 'downing_testMulti.geojson'];
-
+            var request = new XMLHttpRequest();
+            request.open("GET", "./collegelist.txt", false);
+            request.send(null);
+            var text = request.responseText;
+            var multiPolygonGeoJSON = text.split("\n")
+ 
             var xhr = [];
+            var xhr2 = [];
             var lock = false;
+            var first_dict = {};
 
             mainMap.on('click', function(e) {        
                     lock = !lock       
@@ -133,16 +139,43 @@
                         {
                         onEachFeature: function(feature, layer) {
 
-                            var div = document.createElement('canvas');
+                            first_dict[feature.properties.name] = false;
+
+                            function createPopupDashboard(){
+                                var div = document.createElement('div');
+                                div.id = feature.properties.name;
+                                
+                                document.getElementsByTagName('body')[0].appendChild(div);
+                                console.log(document.getElementById(feature.properties.name));
+
+
+                                var datajson = null;
+                                $.ajax({
+                                    'async': false,
+                                    'global': false,
+                                    'url': `./DATAjsons/${feature.properties.id}.json`,
+                                    'dataType': "json",
+                                    'success': function (data) {
+                                        datajson = data;
+                                    }
+                                });
+
+                                document.getElementById(feature.properties.name).innerHTML += `
+                                    Electricitiy Usage for ${feature.properties.name}: ${datajson.emissions[1].value} <br>
+                                    Gas Usage for ${feature.properties.name}: ${datajson.emissions[0].value} <br>`;
+
+                                return div;
+                            }
+
+                            function hide_old_function(){
+                            // This is the old graph popup, with a link to a specific college page for graphs
+
+                  /*        var div = document.createElement('canvas');
                             div.id = feature.properties.name;
                             document.getElementsByTagName('body')[0].appendChild(div);
                             console.log(document.getElementById(feature.properties.name));
 
-                            
-
-                            // This is the old graph popup, with a link to a specific college page for graphs
-
-                            /* function chartMake(){
+                            function chartMake(){
 
                                 const canv = document.getElementById(feature.properties.name)
                                 const ctx = canv.getContext('2d');
@@ -167,21 +200,26 @@
                             };
 
                             chartMake();        */
-
+                            }
 
                             var popup = new L.Popup({
                                 autoPan: false,
                                 keepInView: true,
-                            }).setContent(div);
+                            }).setContent(feature.properties.name);
                             layer.bindPopup(popup);
 
                             mainMap.closePopup();
 
                             layer.on('click', function (e) {
+                                
+                                if(first_dict[feature.properties.name] == false){
+                                    first_dict[feature.properties.name] = createPopupDashboard();
+                                }
+
                                 lock = !lock;
                                 if (lock){
                                     mainMap.closePopup();
-                                    popup.setContent(div);
+                                    popup.setContent(first_dict[feature.properties.name]);
                                     popup.setLatLng(e.latlng).openOn(mainMap);
                                 }
                                 else{

@@ -8,7 +8,7 @@
       "type": "Feature",
       "properties": {
         "name": "Downing College",
-        "data": "downingcollege.csv"
+        "id": "uk.ac.cam.dow"
       },
       "geometry": {
         "type": "MultiPolygon",
