@@ -1,6 +1,6 @@
 {
-    "name": "Jesus College",
-    "id": "uk.ac.cam.jesus",
+    "name": "Queen's College",
+    "id": "uk.ac.cam.queens",
     "emissions": [{
         "period-start": "2019-01-01T00:00:00",
         "period-end": "2020-01-01T00:00:00",

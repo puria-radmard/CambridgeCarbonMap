@@ -1,6 +1,6 @@
 {
-    "name": "Jesus College",
-    "id": "uk.ac.cam.jesus",
+    "name": "Gonville and Caius College",
+    "id": "uk.ac.cam.cai",
     "emissions": [{
         "period-start": "2019-01-01T00:00:00",
         "period-end": "2020-01-01T00:00:00",
@@ -13,6 +13,6 @@
         "period-end": "2020-01-01T00:00:00",
         "measure":"electricity",
         "unit": "kWh",
-        "value": 4
+        "value": 6
     }]
 }
