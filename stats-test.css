@@ -1,0 +1,79 @@
+.wrapper{
+  font-family: 'Roboto', sans-serif;
+  display: grid;
+  grid-template-columns: repeat(3, 33vw);
+  grid-template-rows: 10vh 20vh 20vh 20vh 20vh;
+  grid-gap: 10px;
+  grid-auto-rows: 1vh;
+  text-align: center;
+  align-items: center;
+  column-gap: 0px;
+  row-gap: 0px;
+}
+
+
+.figure{
+  vertical-align: middle;
+}
+
+.number{
+  font-size: 60;
+}
+
+#opener{
+  grid-column: 2 / 4;
+  grid-row: 1; 
+}
+
+#name{
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#image-holder{
+  grid-column: 1;
+  grid-row: 2;
+}
+
+#image-holder{
+  object-fit: cover;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+#total-gas{
+  grid-column:2 / 3;
+  grid-row: 2;
+}
+
+#total-ele{
+  grid-column:2 / 3;
+  grid-row: 3;
+}
+
+#PC-gas{
+  grid-column:3 / 4;
+  grid-row: 2;
+}
+
+#PC-ele{
+  grid-column:3 / 4;
+  grid-row: 3;
+}
+
+#total-CO2{
+  grid-column:2 / 3;
+  grid-row: 4;
+}
+
+#PC-CO2{
+  grid-column:3 / 4;
+  grid-row: 4;
+}
+
+#see-more{
+  grid-column:2 / 4;
+  grid-row: 5;
+  vertical-align: top;
+}
+

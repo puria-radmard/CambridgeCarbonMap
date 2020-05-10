@@ -5,3 +5,4 @@ kings_testMulti.geojson
 caius_testMulti.geojson
 downing_testMulti.geojson
 theleys_testMulti.geojson
+uk.ac.cam.st-edmunds.geojson

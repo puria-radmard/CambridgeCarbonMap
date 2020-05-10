@@ -1,0 +1,385 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link href="css/stats-test.css" rel="stylesheet" type = "text/css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+        <script type="text/javascript" src="jscript/graph.js"></script>
+
+        <script type="text/javascript">
+            // grid-template-rows: 5vh 20vh 20vh 20vh 20vh;
+
+            // For testing
+            featurename = "uk.ac.cam.jesus.json"
+
+            loca = "https://data.cambridgecarbonmap.org/new_jsons/"+featurename;
+
+            $.ajaxSetup({
+                async: false
+            });
+
+            // All other required figures are easy derivatirces of these
+            var pop, gasTot, eleTot, gasCO2Tot, eleCO2Tot;
+            var gasUnits, eleUnits;
+            var placeName = null;
+            var startTime, endTime;
+
+            function parseJSON(){
+                $.getJSON(loca, function(data){
+                    pop = data.population;
+                    gasTot = data.emissions[0].value;
+                    eleTot = data.emissions[1].value;
+
+                    gasUnits = data.emissions[0].unit;
+                    eleUnits = data.emissions[1].unit;
+
+                    // Arbitrary CO2e conversions
+                    gasCO2Tot = gasTot * 15.6;
+                    eleCO2Tot = eleTot * 21.3; 
+
+                    placeName = data.name;
+                    imgurl = data.image;
+
+                    startTime = new Date(data.emissions[0]["period-start"]);
+                    endTime = new Date(data.emissions[0]["period-end"]);
+                    
+                })  
+                //return (imgurl, pop, gasTot, eleTot, gasUnits, eleUnits, placeName);
+
+            };
+
+            parseJSON();
+            console.log("got here 1");
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+            
+        
+        </script>
+
+    </head>
+    <body>    
+        <!--<ul style = "
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #dddddd;">
+
+            <li style= "
+            display: block;
+            padding: 8px;
+            background-color: #dddddd;">
+
+                <a href="index.html">
+                Back to Map
+                </a>
+            </li>
+        </ul>-->
+
+        
+        <div id = "full-grid" class = "wrapper">
+
+            <div id = "opener">
+                <script>
+                    document.write("Last reporting period: <b>");
+                    document.write(startTime.getDate() + " " + months[startTime.getMonth()] + " " + startTime.getFullYear())
+                    document.write(" to " + endTime.getDate() + " " + months[endTime.getMonth()] + " " + endTime.getFullYear() + "</b>")
+                </script>
+            </div>
+
+            <div id = "name" style="font-size: 30;">
+                <script>
+                    document.write(placeName);
+                </script>
+            </div>
+             
+            <div id = image-holder>
+                <figure>
+                    <img id = "place-image" style = "max-width: 100%;
+                    max-height: 100%;
+                    display: block;">
+                    <figcaption><script>document.write("API for <a href ='" + loca + "'>" +  placeName + "</a>")</script></figcaption>
+                </figure>
+                    <script>
+                        var imgdiv = document.getElementById("place-image")
+                        imgdiv.src = imgurl;
+                    </script>
+            </div>
+
+            <div id = "total-gas" class = "figure">
+                <div class = "number-label">
+                    Total gas usage
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write(gasTot);
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write(gasUnits);
+                    </script>
+                </div>
+            </div>
+
+            <div id = "total-ele" class = "figure">
+                <div class = "number-label">
+                    Total elecricity usage
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write(eleTot);
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write(eleUnits);
+                    </script>
+                </div>
+            </div>
+            
+            <div id = "PC-gas" class = "figure">
+                <div class = "number-label">
+                    Gas usage per person
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write(gasTot/pop);
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write(gasUnits);
+                    </script>
+                </div>
+            </div>
+
+            <div id = "PC-ele" class = "figure">
+                <div class = "number-label">
+                    Elecricity usage per person
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write(eleTot/pop);
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write(eleUnits);
+                    </script>
+                </div>
+            </div>
+
+            <div id = "total-CO2" class = "figure">
+                <div class = "number-label">
+                    Total
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write((eleCO2Tot + gasCO2Tot));
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write("tCO2e");
+                    </script>
+                </div>
+            </div>
+
+            <div id = "PC-CO2" class = "figure">
+                <div class = "number-label">
+                    CO2 emissions per person
+                </div>
+                <div class = "number">
+                    <script>
+                    document.write((eleCO2Tot + gasCO2Tot)/pop);
+                    </script>
+                </div>
+                <div class = "unit">
+                    <script>
+                    document.write("tCO2e");
+                    </script>
+                </div>
+            </div>
+
+            <div id = "see-more">
+                <a href = "#chart-section" style = "font-size: small;">
+                    <img src = "512238-200.png" height = 50vh>
+                    <br>
+                </a>
+                <script>
+                    //document.write("See more information about " + placeName);
+                </script>
+            </div>
+
+            <!--
+                NEEDS TO BE ADAPTED TO INCLUDE TIME PERIOD, AND USAGE OF LOCATION
+                
+                <div id = "sentence" class = "figure">
+                <span style="vertical-align: middle;">
+                    <script>
+                        document.write("On average, people at "+ placeName+ " emit ");
+                        document.write("<span style='font-size:30'>"+Math.round(100*((eleCO2Tot + gasCO2Tot)/pop)/6.50)/100+"</span>");
+                        document.write(" times more than the UK average.")
+                    </script>
+                </span>
+            </div>-->
+        </div>
+
+        <div id = "chart-section">
+
+            <!--<canvas id = "line-chart" width = "800" height = "80%"></canvas>-->
+            <canvas id = "line-chart"></canvas>
+
+
+            <div id = "chart-script">
+                    <script>
+
+                        var timeBlocks = [];
+                        var gasHistory = [];
+                        var eleHistory = [];
+
+
+                        var len = null;
+
+                        // May want to adapt JSON format for histories here, could include if statement on history.measure to iterate over one subjson to get gas or electricity
+
+                        function getHistories(){
+                            $.getJSON(loca, function(data){
+
+                                len = data.history[0].length;
+                                a = new Date(data.history[0][1]["period-start"]);
+                                console.log(a.getTime());
+
+                                for(var i = 0; i<len; i++){
+                                    gasHistory.push(data.history[0][i].value);
+                                    eleHistory.push(data.history[1][i].value);
+                                    timeBlocks.push([new Date(data.history[0][i]["period-start"]), new Date(data.history[0][i]["period-end"])])    // Start and end, since data collected may be discontinuous
+                                }
+                            })
+                        }
+
+                        getHistories();
+
+                        // Ideally, these would be variable times differences blocks, but chart.js doesnot support that
+
+                        // Average each time block to find middle time
+                        var timeHistory = [];
+                        var avg = null;
+
+                        for(var k in timeBlocks){
+                            avg = (timeBlocks[k][1].getTime() + timeBlocks[k][0].getTime())/(2)
+                            timeHistory.push(avg)
+                        }
+
+
+                        // Find difference in each time block, and normalise readings
+                        var gasNorms = [];
+                        var eleNorms = [];
+                        var diff = null;
+
+                        for(var k in timeBlocks){
+                            diff = (timeBlocks[k][1].getTime() - timeBlocks[k][0].getTime())/(1000*60*60*24*365)
+                            gasNorms.push(gasHistory[k]/diff);
+                            eleNorms.push(eleHistory[k]/diff)
+                        }
+
+                        // Convert gas and elec norms into a CO2 equivalent (using arbitrary conversion here)
+                        var CO2Norms = [];
+
+                        for(var k in timeBlocks){
+                            CO2Norms.push(15.6*gasNorms[k] + 21.3*eleNorms[k]);
+                        }
+
+                        // Plot these later
+                        console.log(timeHistory, gasNorms, eleNorms, CO2Norms);
+
+                        
+                        // Make chart
+
+                        var ctx = document.getElementById("line-chart");
+                        ctx.height = 100;
+
+                        new Chart(ctx, {
+                            type: 'line',
+                            data:{
+                                labels: timeHistory,
+                                datasets:[{
+                                    data: CO2Norms,
+                                    label: "Average annual emissions in tCO2e",
+                                    borderColor: "#3e95cd",
+                                    fill: false,
+                                },
+                                {
+                                    data: eleNorms,
+                                    label: "Average annual electricity usage in kWh",
+                                    borderColor: "#FFFF00",
+                                    fill: false,
+                                },
+                                {
+                                    data: gasNorms,
+                                    label: "Average annual gas usage in m3",
+                                    borderColor: "##8530ba",
+                                    fill: false,
+                                }
+                            ]
+                            },
+                            options:{
+                                legend:{
+                                    position: "left"
+                                },
+                                title:{
+                                    display: true,
+                                    text: placeName + " Reporting History - reported at middle of period",
+                                }
+                            }
+                        });
+
+
+                    </script>
+            </div>
+        </div>
+
+
+        <!-- Smooth scroll -->
+        <script>
+            // Select all links with hashes
+            $('a[href*="#"]')
+                // Remove links that don't actually link to anything
+                .not('[href="#"]')
+                .not('[href="#0"]')
+                .click(function(event) {
+                    // On-page links
+                    if (
+                        location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
+                        && 
+                        location.hostname == this.hostname
+                    ) {
+                        // Figure out element to scroll to
+                        var target = $(this.hash);
+                        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                        // Does a scroll target exist?
+                        if (target.length) {
+                            // Only prevent default if animation is actually gonna happen
+                            event.preventDefault();
+                            $('html, body').animate({
+                            scrollTop: target.offset().top
+                            }, 1000, function() {
+                                // Callback after animation
+                                // Must change focus!
+                                var $target = $(target);
+                                $target.focus();
+                                if ($target.is(":focus")) { // Checking if the target was focused
+                                    return false;
+                                } else {
+                                    $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                                    $target.focus(); // Set focus again
+                                };
+                            });
+                        }
+                    }
+                });
+        </script>
+    </body>
+
+</html>

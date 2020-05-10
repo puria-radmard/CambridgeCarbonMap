@@ -102,15 +102,15 @@
         </script>
 
         <!-- Main map and API access script -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
         <script>
-            const mainMap = L.map('mainMap').setView([52.205, 0.1218], 16);
+            const mainMap = L.map('mainMap').setView([52.205, 0.1218], 12.5);
             const attribution = '&copy; <a href="https://www.openstreetmap/copyright">OpenStreeMap</a> contributors';
             
             const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            tiles = L.tileLayer(tileUrl, {attribution});
-
+            const tiles = L.tileLayer(tileUrl, {attribution});
             tiles.addTo(mainMap);
-            
 
             var request = new XMLHttpRequest();
             request.open("GET", "./collegelist.txt", false);
@@ -123,18 +123,45 @@
             var lock = false;
             var first_dict = {};
 
-            var input = null
-            $.ajax({
-                'async': false,
-                'global': false,
-                'url': `./GEOjsons/hierarchy.json`,
-                'dataType': "json",
-                'success': function (data) {
-                    input = data.hierarchy;
-                }
-            });
-
-            console.log(input);
+            var input=
+                [
+                    {
+                        "id": "uk.ac.cam",
+                        "show": false,
+                        "children": [
+                            {
+                                "id": "uk.ac.cam.st-edmunds",
+                                "show": true,
+                                "children": [{
+                                    "id": "uk.ac.cam.st-edmunds.white-cottage",
+                                    "show": false,
+                                    "children": null
+                                }]
+                            }
+                        ]
+                    },
+                    // {
+                    //     "id": "biz.cambridgebusinesspark",
+                    //     "show": true,
+                    //     "children": [
+                    //         {
+                    //             "id": "com.cambridgeconsultants",
+                    //             "show": true,
+                    //             "children": null
+                    //         },
+                    //         {
+                    //             "id": "com.apple",
+                    //             "show": true,
+                    //             "children": null
+                    //         }
+                    //     ]
+                    // }
+                    {
+                        "id": "net.theleys",
+                        "show": true,
+                        "children": null
+                    }
+                ];
 
             var showDict = {};
             var childDict = {};
@@ -158,55 +185,48 @@
                     }
                 }
             }
-
             decideShow(input);
 
             var layerDict = {};
 
             mainMap.on('click', function(e) {        
                     lock = !lock       
-            });
-
-            
+                });
 
             function changeDisplay(layer, mode){
                 if(mode==0){
                     // Main object, seen on surface, not hovered over
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0.35, "opacity": 0})
-                    layer.bringToFront();
+                    layer.setStyle({"fillColor": "0000ff", "fillOpacity": 0.35, "opacity": 0.35})
                 }
                 if(mode==1){
                     // Parent object, being hover over ///// next iteration: have children show if this mode is stayed on for long enough
-                    layer.setStyle({"fillColor": "#ff0000", "fillOpacity": 0.3, "opacity": 0})
+                    layer.setStyle({"fillColor": "ff0000", "fillOpacity": 0.4, "opacity": 0.5})
                 }
-                if(mode==2){
+                if(mode==4){
                     // Parent object, has been selected, so now faint to show children
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0, "opacity": 0.3})
+                    layer.setStyle({"fillColor": "ff0000", "fillOpacity": 0.3, "opacity": 0.4})
                 }
                 if(mode==3){
                     // Child object, parent not selected so is invisible
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0, "opacity": 0})
+                    layer.setStyle({"fillColor": "0000ff", "fillOpacity": 0, "opacity": 0})
                 }
                 if(mode==4){
                     // Child object, parent has been selected so is now visible, not hovered over
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0.5, "opacity": 0})
-                    layer.bringToFront();
+                    layer.setStyle({"fillColor": "0000ff", "fillOpacity": 0.35, "opacity": 0.35})
                 }
                 if(mode==5){
                     // Child object, being hovered over
-                    layer.setStyle({"fillColor": "#ff0000", "fillOpacity": 0.3, "opacity": 0})
+                    layer.setStyle({"fillColor": "0000ff", "fillOpacity": 0.35, "opacity": 0.35})
                 }
             }
 
-            
             Object.keys(showDict).forEach(function(addr, index){
-                
                 xhr[index] = new XMLHttpRequest();
-                xhr[index].open('GET', `GEOjsons/${addr}.geojson`, true);
+                xhr[index].open("GET", `GEOjsons/${addr}.geojson`, true);
                 xhr[index].setRequestHeader('Content-Type', 'application/json');
                 xhr[index].responseType = 'json';
-                console.log(addr)
                 
+
                 xhr[index].onload = function() {
                     if (xhr[index].status !== 200) return
                         L.geoJSON(xhr[index].response,
@@ -219,7 +239,7 @@
                                 
                                 var div = document.createElement("div");
                                 div.id = `${feature.properties.name}`;
-                                
+                            
                                 document.getElementsByTagName('body')[0].appendChild(div);
 
                                 console.log(document.getElementById(feature.properties.name));
@@ -228,10 +248,10 @@
                                 $.ajax({
                                     'async': false,
                                     'global': false,
-                                    'url': `./DATAjsons/${feature.properties.id}.json`,
-                                    'dataType': "json",
-                                    'success': function (data) {
-                                        datajson = data;
+                                'url': `./DATAjsons/${feature.properties.id}.json`,
+                                'dataType': "json",
+                                'success': function (data) {
+                                    datajson = data;
                                     }
                                 });
 
@@ -246,131 +266,118 @@
                             layer.bindPopup(popup, {maxWidth: 800});
 
                             if (showDict[addr] == true){var startmode = 0}else{var startmode = 3}
-                            changeDisplay(layer, startmode)
 
                             layerDict[addr] = [layer, startmode];
 
                             mainMap.closePopup();
 
                             layer.on('click', function (e) {
-                                
-                                // Saves having to make a link popup until it's clicked on anyway
+                            
+                                // Saves having to make a popup until it's clicked on anyway
                                 if(first_dict[feature.properties.name] == false){
-                                    first_dict[feature.properties.name] = makeLink(feature);
+                                    first_dict[feature.properties.name] = createPopupDashboard();
                                 }
-
-                                // Is a parent, not yet selected, so when it is clicked, it's popup stays the same, but we get it's children turn light green
-                                if(layerDict[addr][1] == 1){
-                                    layerDict[addr][1] = 2;
-                                    changeDisplay(layer, layerDict[addr][1]);
-
-                                    if(childDict[addr]){
-                                        for(j in childDict[addr]){
-                                            layerDict[childDict[addr][j]][1] = 4;
-                                            changeDisplay(layerDict[childDict[addr][j]][0], layerDict[childDict[addr][j]][1]);                                            
-                                        }
-                                    }
-                                }
-
-                                // Is a parent that has been selected, now that it is is selected again it will hide all children and go back to normal
-                                else if(layerDict[addr][1] == 2){
-                                    layerDict[addr][1] = 1;
-                                    changeDisplay(layer, layerDict[addr][1]);
-
-                                    if(childDict[addr]){
-                                        for(j in childDict[addr]){
-                                            layerDict[childDict[addr][j]][1] = 3;
-                                            changeDisplay(layerDict[childDict[addr][j]][0], layerDict[childDict[addr][j]][1]); 
-                                        }
-                                    }
-                                }
+                                
 
                                 lock = !lock;
-
                                 if (lock){
                                     mainMap.closePopup();
                                     popup.setContent(first_dict[feature.properties.name]);
                                     popup.setLatLng(e.latlng).openOn(mainMap);
                                 }
-
                                 else{
                                     popup.setContent(feature.properties.name);
                                 }
                             });
 
-                            layer.on('mouseover', function (e) {
-                                // Is a parent object, just getting hovered over
-                                if(layerDict[addr][1] == 0){
-                                    layerDict[addr][1] = 1;
-                                    changeDisplay(layer, layerDict[addr][1]);
-                                }
-                                // Is a child, has just been revealed
-                                else if(layerDict[addr][1] == 4 && !lock){
-                                    layerDict[addr][1] = 5;
-                                    changeDisplay(layer, layerDict[addr][1]);
-                                    console.log("wow")
-                                }
 
-                                if (!lock && layerDict[addr][1] != 3 && layerDict[addr][1] != 2){
-                                    console.log(addr, layerDict[addr][1]);
-                                    
-                                    popup.setLatLng(e.latlng).openOn(mainMap);
-                                    popup.setContent(feature.properties.name);
-                                };
+                             layer.on('mouseover', function (e) {
+                                 this.setStyle({ 'fillColor': '#ff0000', "opacity": 0.5});
+                                 if (!lock || showDict[addr]){
+                                     popup.setLatLng(e.latlng).openOn(mainMap);
+                                     popup.setContent(feature.properties.name);
+                                 };
+                             });
 
-                                
-                            }); 
-
-                            layer.on('mouseout', function (e) {
-                                // Is a parent object, was just hovered over but not clicked
-                                if(layerDict[addr][1] == 1){
-                                    layerDict[addr][1] = 0;
-                                    changeDisplay(layerDict[addr][0], layerDict[addr][1]);
-                                }
-                                // Is a child, has been revealed but not clicked, so is now going back to 
-                                else if(layerDict[addr][1] == 5){
-                                    layerDict[addr][1] = 4;
-                                    changeDisplay(layer, layerDict[addr][1]);
-                                    console.log("child out")
-                                }
-
-                                if(!lock){
+                             layer.on('mouseout', function (e) {
+                                 this.setStyle({'fillColor': "#ffffff", "opacity": defaultOpacity, "fillOpacity": defaultOpacity});
+                                 if(!lock){
                                      mainMap.closePopup();
-                                }
-                            });
+                                 }
+                             });
 
-                            layer.on('mousemove', function (e) {
+                             layer.on('mousemove', function (e) {
+                                 if(!lock){
+                                     mainMap.closePopup();
+                                     popup.setLatLng(e.latlng).openOn(mainMap);
+                                 }
+                             });
 
-                                if(!lock && layerDict[addr][1] != 3 && layerDict[addr][1] != 2){
-                                    mainMap.closePopup();
-                                    popup.setLatLng(e.latlng).openOn(mainMap);
-                                }
-                            });
-
-                            popup.setLatLng([0,0]).openOn(mainMap);
-                            mainMap.closePopup();
-                        }
-                        }).addTo(mainMap);
-                    };
-
-                xhr[index].send();
+                             popup.setLatLng([0,0]).openOn(mainMap);
+                             mainMap.closePopup();
+                         }
+                         }).addTo(mainMap);
+                     };
+                 xhr[index].send();
 
             });
-
         </script>
 
-    <script>
+        <script>
+            function createDashboard(feature, container){
 
-        function makeLink(feature){
+                var datajson = null;
+                $.ajax({
+                    'async': false,
+                    'global': false,
+                    'url': `./DATAjsons/${feature.properties.id}.json`,
+                    'dataType': "json",
+                    'success': function (data) {
+                        datajson = data;
+                    }
+                });
 
-            var div = document.createElement("a");
-            div.href = "stats-test.html";
-            div.innerHTML = feature.properties.name;
-            return div
+                const max_value_gas = 10;
+                const max_value_elec = 10;
 
-        }
+                var gasKnob = pureknob.createKnob(200, 150);
+                gasKnob.setProperty("angleStart", -Math.PI/2 - 0.35);
+                gasKnob.setProperty("angleEnd", Math.PI/2 + 0.35);
+                gasKnob.setProperty("valMin", 0);
+                gasKnob.setProperty("valMax", max_value_gas);
+                gasKnob.setProperty("colorBG", "Grey");
+                gasKnob.setProperty("label", `${feature.properties.name} Gas Usage`)
+                gasKnob.setProperty("colorLabel", "Orange");
+                gasKnob.setProperty("colorFG", "Orange");
+                gasKnob.setProperty("trackWidth", 0.25);
+                gasKnob.setProperty("textScale", 1);
+                gasKnob.setProperty("readonly", true);
+                
+                gasKnob.setValue(datajson.emissions[0].value);
+                gasNode = gasKnob.node();
+
+                var elecKnob = pureknob.createKnob(200, 150);
+                elecKnob.setProperty("angleStart", -Math.PI/2 - 0.35);
+                elecKnob.setProperty("angleEnd", Math.PI/2 + 0.35);
+                elecKnob.setProperty("valMin", 0);
+                elecKnob.setProperty("valMax", max_value_elec);
+                elecKnob.setProperty("colorBG", "Grey");
+                elecKnob.setProperty("label", `${feature.properties.name} Electricity Usage`)
+                elecKnob.setProperty("colorLabel", "Blue");
+                elecKnob.setProperty("colorFG", "Blue");
+                elecKnob.setProperty("trackWidth", 0.25);
+                elecKnob.setProperty("textScale", 1);
+                elecKnob.setProperty("readonly", true);
+                
+                elecKnob.setValue(datajson.emissions[1].value);
+                elecNode = elecKnob.node();
+
+                elem = container;
+                elem.appendChild(gasNode);
+                elem.appendChild(elecNode);
+            }
             
-    </script>
+        </script>
     
 
     </body>
