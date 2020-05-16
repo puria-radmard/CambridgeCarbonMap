@@ -1,5 +1,4 @@
-<!--Website design and map operation started by Puria Radmard. 
-    Continued by ... 
+<!--Website design and map operation started by Puria Radmard.
     By the Big Cambridge Climate Change Conversation. 
     Special thanks to all our partners -->
 
@@ -45,8 +44,7 @@
                 <h3> - by the Big Cambridge Climate Change Conversation team </h3>
         </div>
 
-        <img src="images/logo.png" class="logo" alt="B4C">
-
+        
         <div id="selection" class="section">
                 <a href="#contactUs">Get in touch</a>
         </div>
@@ -106,20 +104,14 @@
             const mainMap = L.map('mainMap').setView([52.205, 0.1218], 16);
             const attribution = '&copy; <a href="https://www.openstreetmap/copyright">OpenStreeMap</a> contributors';
             
-            const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            tiles = L.tileLayer(tileUrl, {attribution});
+            var tiles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                maxZoom: 20,
+                subdomains:['mt0','mt1','mt2','mt3']
+            });
 
             tiles.addTo(mainMap);
-            
-
-            var request = new XMLHttpRequest();
-            request.open("GET", "./collegelist.txt", false);
-            request.send(null);
-            var text = request.responseText;
-            var multiPolygonGeoJSON = text.split("\n")
  
             var xhr = [];
-            var xhr2 = [];
             var lock = false;
             var first_dict = {};
 
@@ -134,10 +126,9 @@
                 }
             });
 
-            console.log(input);
-
             var showDict = {};
             var childDict = {};
+            var layerDict = {};
             
             function decideShow(array){
                  
@@ -146,7 +137,7 @@
                     childDict[array[i].id] = [];
 
                     if(array[i].show == true){
-                        showDict[array[i].id] = true;
+                        that.showDict[array[i].id] = true;
                     }else{showDict[array[i].id] = false}
 
                     if(array[i].children){
@@ -161,13 +152,9 @@
 
             decideShow(input);
 
-            var layerDict = {};
-
             mainMap.on('click', function(e) {        
                     lock = !lock       
             });
-
-            
 
             function changeDisplay(layer, mode){
                 if(mode==0){
@@ -181,7 +168,7 @@
                 }
                 if(mode==2){
                     // Parent object, has been selected, so now faint to show children
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0, "opacity": 0.3})
+                    layer.setStyle({"fillColor": "#0000ff", "color": "#cc0000", "fillOpacity": 0, "opacity": 0.3})
                 }
                 if(mode==3){
                     // Child object, parent not selected so is invisible
@@ -189,7 +176,7 @@
                 }
                 if(mode==4){
                     // Child object, parent has been selected so is now visible, not hovered over
-                    layer.setStyle({"fillColor": "#0000ff", "fillOpacity": 0.5, "opacity": 0})
+                    layer.setStyle({"fillColor": "#669900", "fillOpacity": 0.5, "opacity": 0})
                     layer.bringToFront();
                 }
                 if(mode==5){
@@ -223,17 +210,6 @@
                                 document.getElementsByTagName('body')[0].appendChild(div);
 
                                 console.log(document.getElementById(feature.properties.name));
-
-                                var datajson = null;
-                                $.ajax({
-                                    'async': false,
-                                    'global': false,
-                                    'url': `./DATAjsons/${feature.properties.id}.json`,
-                                    'dataType': "json",
-                                    'success': function (data) {
-                                        datajson = data;
-                                    }
-                                });
 
                                 createDashboard(feature, div)
                                 return div
@@ -308,11 +284,9 @@
                                 else if(layerDict[addr][1] == 4 && !lock){
                                     layerDict[addr][1] = 5;
                                     changeDisplay(layer, layerDict[addr][1]);
-                                    console.log("wow")
                                 }
 
                                 if (!lock && layerDict[addr][1] != 3 && layerDict[addr][1] != 2){
-                                    console.log(addr, layerDict[addr][1]);
                                     
                                     popup.setLatLng(e.latlng).openOn(mainMap);
                                     popup.setContent(feature.properties.name);
@@ -361,11 +335,72 @@
 
     <script>
 
+        function findData(id){
+            var obj = null
+            $.ajax({
+                'async': false,
+                'global': false,
+                'url': `./DATAjsons/`+id+`.json`,
+                'dataType': "json",
+                'success': function (data) {
+                    obj = data;
+                    console.log(obj);
+                }
+            });
+            return obj
+
+        }
+
         function makeLink(feature){
 
-            var div = document.createElement("a");
+            var div = document.createElement("div");
+            div.align = "center"
             div.href = "stats-test.html";
-            div.innerHTML = feature.properties.name;
+
+            var searcher = feature.properties.id;
+            var datajson = null;
+            var own = true;
+            
+            while(true){
+                datajson = findData(searcher);
+                if(datajson == null){
+
+                    own = false;
+                    searcher = searcher.split(".");
+                    var popped = searcher.pop()
+
+                    if (searcher.length == 0){
+                        break;
+                    }
+
+                    searcher = searcher.join(".")
+                    //console.log(searcher)
+                }
+                else{
+                    break
+                }
+            }
+            console.log(datajson)
+
+            // Change to be monthly?
+            var emissionsNumber = datajson.emissions[0].value * 15.6 + datajson.emissions[1].value * 21.3;
+            var toptext
+            var bottext = "Click here for more"
+            
+            if(own){
+                toptext = `Emissions for ${feature.properties.name}:`
+            } else{
+                toptext = `No stats for this building individually! Emissions for ${datajson.name}:`
+            }
+            console.log(toptext)
+
+            div.innerHTML = `
+                ${toptext}</br>
+                <p style="font-size:25px">${emissionsNumber}</p>
+                </br>
+                <a href = "stats-test.html">${bottext}</a>
+            `
+
             return div
 
         }

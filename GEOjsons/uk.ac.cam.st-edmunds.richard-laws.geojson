@@ -5,7 +5,8 @@
       "type": "Feature",
       "properties": {
         "name": "Richard Laws Building, St. Edmund's College",
-        "id": "uk.ac.cam.st-edmunds.richard-laws"
+        "id": "uk.ac.cam.st-edmunds.richard-laws",
+        "show": false
       },
       "geometry": {
         "type": "Polygon",

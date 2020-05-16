@@ -5,7 +5,8 @@
       "type": "Feature",
       "properties": {
         "name": "White Cottage, St. Edmund's College",
-        "id": "uk.ac.cam.st-edmunds.white-cottage"
+        "id": "uk.ac.cam.st-edmunds.white-cottage",
+        "show": false
       },
       "geometry": {
         "type": "Polygon",

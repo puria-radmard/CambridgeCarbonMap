@@ -5,7 +5,8 @@
       "type": "Feature",
       "properties": {
         "name": "King's College",
-        "id": "uk.ac.cam.kings"
+        "id": "uk.ac.cam.kings",
+        "show": true
       },
       "geometry": {
         "type": "MultiPolygon",

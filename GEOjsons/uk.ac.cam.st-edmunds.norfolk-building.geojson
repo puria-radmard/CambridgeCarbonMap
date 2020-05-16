@@ -5,7 +5,8 @@
       "type": "Feature",
       "properties": {
         "name": "Norfolk Building, St. Edmund's College",
-        "id": "uk.ac.cam.st-edmunds.norfolk-building"
+        "id": "uk.ac.cam.st-edmunds.norfolk-building",
+        "show": false
       },
       "geometry": {
         "type": "Polygon",
