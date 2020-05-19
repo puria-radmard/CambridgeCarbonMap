@@ -3,11 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {
-        "name": "King's College",
-        "id": "uk.ac.cam.kings",
-        "show": true
-      },
+      "properties": {"id": "uk.ac.cam.kings"},
       "geometry": {
         "type": "MultiPolygon",
         "coordinates": [[

@@ -3,11 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {
-        "name": "The Leys School",
-        "id": "net.theleys",
-        "show": true
-      },
+      "properties": {"id": "net.theleys"},
       "geometry": {
         "type": "MultiPolygon",
         "coordinates": [[

@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "3 Cranmer Road, King's College",
-                     "id":"uk.ac.cam.kings.cranmer",
-                     "show": false},
+      "properties": {"id":"uk.ac.cam.kings.cranmer"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

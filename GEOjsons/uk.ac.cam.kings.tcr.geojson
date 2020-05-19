@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Tennis Court Road Accomodation, King's College",
-                     "id":"uk.ac.cam.kings.tcr",
-                     "show": false},
+      "properties": {"id":"uk.ac.cam.kings.tcr"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

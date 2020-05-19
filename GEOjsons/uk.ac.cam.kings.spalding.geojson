@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Spalding Hostel, King's College",
-                     "id":"uk.ac.cam.kings.spalding",
-                     "show": false},
+      "properties": {"id":"uk.ac.cam.kings.spalding"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

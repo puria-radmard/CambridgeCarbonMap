@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Porters' Lodge, King's College",
-                     "id": "uk.ac.cam.kings.plodge",
-                     "show": false},
+      "properties": {"id": "uk.ac.cam.kings.plodge"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

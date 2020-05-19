@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Wilkins Building, King's College",
-                     "id": "uk.ac.cam.kings.wilkins",
-                     "show": false},
+      "properties": {"id": "uk.ac.cam.kings.wilkins"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

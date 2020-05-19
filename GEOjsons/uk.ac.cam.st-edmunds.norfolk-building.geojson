@@ -3,11 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {
-        "name": "Norfolk Building, St. Edmund's College",
-        "id": "uk.ac.cam.st-edmunds.norfolk-building",
-        "show": false
-      },
+      "properties": {"id": "uk.ac.cam.st-edmunds.norfolk-building"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [

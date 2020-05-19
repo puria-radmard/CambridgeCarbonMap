@@ -1,6 +1,7 @@
 {
     "name": "St. Edmund's College",
     "id": "uk.ac.cam.st-edmunds",
+    "subentites": ["uk.ac.cam.st-edmunds.white-cottage", "uk.ac.cam.st-edmunds.norfolk-building", "uk.ac.cam.st-edmunds.richard-laws"],
     "emissions": [{
         "period-start": "2019-01-01T00:00:00",
         "period-end": "2020-01-01T00:00:00",

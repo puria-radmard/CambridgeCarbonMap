@@ -3,9 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {"name": "Garden Hostel, King's College",
-                     "id":"uk.ac.cam.kings.garden",
-                     "show": false},
+      "properties": {"id":"uk.ac.cam.kings.garden"},
       "geometry": {
         "type": "Polygon",
         "coordinates": [
