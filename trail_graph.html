@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link  id='GoogleFontsLink' href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet' type='text/css'>
+		<script>
+ WebFontConfig = {
+ google: 
+{families: ["Open Sans",]},active: function() { 
+ DrawTheChart(ChartData,ChartOptions,"chart-01","line")}
+};
+		</script>
+		<script asyn src="js/webfont.js">
+		</script><script src="js/Chart.min.js"></script>
+		<script>
+function DrawTheChart(ChartData,ChartOptions,ChartId,ChartType){
+eval('var myLine = new Chart(document.getElementById(ChartId).getContext("2d"),{type:"'+ChartType+'",data:ChartData,options:ChartOptions});document.getElementById(ChartId).getContext("2d").stroke();')
+}
+		</script>
+	</head>
+	<body>
+		<canvas  id="chart-01" width="875" height="625"  style="background-color:rgba(255,255,255,1.00);border-radius:0px;width:700px;height:500px;padding-left:0px;padding-right:0px;padding-top:0px;padding-bottom:0px"></canvas>
+		<script> function MoreChartOptions(){} 
+var ChartData = {
+	labels : ["January 2019","February 2019","March 2019","April 2019","May 2019","June 2019","July 2019",],
+	datasets : [
+		{
+		data : [65,8,90,81,56,55,40,],
+		backgroundColor :'#3498db',
+		borderColor : 'rgba(52,152,219,0.5)',
+		pointBackgroundColor:'#3498db',
+		pointBorderColor : '#fff',
+		label:"White Cottage"},
+
+		{
+		data : [21,48,40,19,96,27,100,],
+		backgroundColor :'#2ecc71',
+		borderColor : '#2ecc71',
+		pointBackgroundColor:'#2ecc71',
+		pointBorderColor : '#fff',
+		label:"Richard Laws Building"},
+
+		{
+		data : [40,29,50,21,64,30,55,],
+		backgroundColor :'#9b59b6',
+		borderColor : '#9b59b6',
+		pointBackgroundColor:'#9b59b6',
+		pointBorderColor : '#fff',
+		label:"Norfolk Building"},
+
+		{
+		data : [126,85,180,121,216,112,195,],
+		backgroundColor :'#f1c40f',
+		borderColor : '#f1c40f',
+		pointBackgroundColor:'#f1c40f',
+		pointBorderColor : '#ffffff',
+		label:"Total"},
+
+]
+	};
+ChartOptions= {
+responsive:false,
+	layout:{padding:{top:12,left:12,bottom:12,},},
+	 scales: {
+	xAxes:[{
+gridLines:{borderDash:[],},
+}],
+
+	yAxes:[{
+gridLines:{borderDash:[],},
+}],
+ },plugins:{
+datalabels:{display:true,
+	font:{
+		style:' bold',},},
+},
+legend:{
+	position:'left',
+	labels:{
+		generateLabels: function(chart){
+			 return  chart.data.datasets.map( function( dataset, i ){
+				return{
+					text:dataset.label,
+					lineCap:dataset.borderCapStyle,
+					lineDash:[],
+					lineDashOffset: 0,
+					lineJoin:dataset.borderJoinStyle,
+					fillStyle:dataset.backgroundColor,
+					strokeStyle:dataset.borderColor,
+					lineWidth:dataset.pointBorderWidth,
+					lineDash:dataset.borderDash,
+				}
+			})
+		},
+
+	},
+},
+
+title:{
+	display:true,
+	text: "St. Edmund's College Emissions",
+	fontColor:'#3498db',
+	fontSize:32,
+	fontStyle:' bold',
+	},
+elements: {
+	arc: {
+},
+	point: {},
+	line: {tension:0.2,fill:false,
+},
+	rectangle: {
+},
+},
+tooltips:{
+},
+hover:{
+	mode:'nearest',
+	animationDuration:400,
+},
+};
+ DrawTheChart(ChartData,ChartOptions,"chart-01","line");</script></body></html>

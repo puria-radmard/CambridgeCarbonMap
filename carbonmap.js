@@ -48,7 +48,6 @@ class CarbonMap {
         tiles.addTo(this.mainMap);
 
         this.lock = false;
-        var first_dict = {};
 
         var that = this;
 
@@ -81,96 +80,27 @@ class CarbonMap {
             }
         }
 
-        this.childDict = {};
         this.layerDict = {};
-        this.fullList = {};
-
-        function findParents(item){
-            
-            var searcher = item.properties.id;
-            var parent = null;
-            
-            while(true){
-                parent = findShow(searcher);
-                if(parent == null){
-
-                    searcher = searcher.split(".");
-                    var popped = searcher.pop()
-
-                    if (searcher.length == 0){
-                        break;
-                    }
-
-                    searcher = searcher.join(".")
-                }
-                else{
-                    break
-                }
-            }
-            return parent
-        }
-
-        function arraysEqual(a1,a2) {
-            /* WARNING: arrays must not contain {objects} or behavior may be undefined */
-
-            var a = JSON.stringify(a1)==JSON.stringify(a2);
-            return a
-        }
-
-        function findChildren(parent){
-
-            parent = parent.split(".")
-
-            var parentLength = parent.length
-            var j
-            var children = []
-            var isChild
-
-            for (j in that.childList){
-                isChild = false
-
-                if(that.childList[j].split(".").length>=parentLength){
-
-                    if(arraysEqual(that.childList[j].split(".").slice(0, parentLength), parent)){
-
-                        if(!arraysEqual(that.childList[j].split("."), parent)){
-                            isChild = true
-                        }
-                    }
-                }
-                if(isChild){
-                    children.push(that.childList[j])
-                }
-            }
-
-            return children
-
-        }
 
         this.mainMap.on('click', function (e) {
             that.lock = !that.lock
         });
 
         // Will have to generate this in next iteration
-        this.startList = ["uk.ac.cam.st-edmunds", "uk.ac.cam.kings", "net.theleys"]
-        this.childList = ["uk.ac.cam.st-edmunds.white-cottage", "uk.ac.cam.st-edmunds.norfolk-building", "uk.ac.cam.st-edmunds.richard-laws", "uk.ac.cam.kings.kingsparade","uk.ac.cam.kings.spalding","uk.ac.cam.kings.kingsfield","uk.ac.cam.kings.garden","uk.ac.cam.kings.grasshopper","uk.ac.cam.kings.cranmer","uk.ac.cam.kings.st-edwards","uk.ac.cam.kings.tcr","uk.ac.cam.kings.market","uk.ac.cam.kings.plodge","uk.ac.cam.kings.bodleys","uk.ac.cam.kings.old-site","uk.ac.cam.kings.provosts-lodge","uk.ac.cam.kings.webbs","uk.ac.cam.kings.keynes","uk.ac.cam.kings.a-staircase","uk.ac.cam.kings.wilkins"]
+        this.startList = findData("index")
+
+        //this.childList = ["uk.ac.cam.st-edmunds.white-cottage", "uk.ac.cam.st-edmunds.norfolk-building", "uk.ac.cam.st-edmunds.richard-laws", "uk.ac.cam.kings.kingsparade","uk.ac.cam.kings.spalding","uk.ac.cam.kings.kingsfield","uk.ac.cam.kings.garden","uk.ac.cam.kings.grasshopper","uk.ac.cam.kings.cranmer","uk.ac.cam.kings.st-edwards","uk.ac.cam.kings.tcr","uk.ac.cam.kings.market","uk.ac.cam.kings.plodge","uk.ac.cam.kings.bodleys","uk.ac.cam.kings.old-site","uk.ac.cam.kings.provosts-lodge","uk.ac.cam.kings.webbs","uk.ac.cam.kings.keynes","uk.ac.cam.kings.a-staircase","uk.ac.cam.kings.wilkins"]
         
-        function putOnMap (addr){
+        function putOnMap (objjson){
+
+            let addr = objjson.id
+
             $.getJSON(that.dataRoot + "/geojson/" + addr + ".geojson", function (geojson) {
                 L.geoJSON(geojson,
                 {
                     onEachFeature: function (feature, layer) {
 
-
-                        first_dict[feature.properties.id] = false;
-
-                        that.childDict[feature.properties.id] = []
-
-                        var parent = findParents(feature)
-                        if(parent == feature.properties.id){
-                        }else{
-                            that.childDict[parent].push(feature.properties.id)
-                        }
+                        objjson.loadedSubentities = []
 
                         var popup = new L.Popup({
                             autoPan: false,
@@ -178,54 +108,62 @@ class CarbonMap {
                         }).setContent(feature.properties.name);
                         layer.bindPopup(popup, { maxWidth: 800 });
 
-                        if (feature.properties.show) { var startmode = 0 } else { var startmode = 4 }
+                        var startmode = 0
+
+                        if (that.startList.indexOf(objjson.id) < 0){startmode = 4}
                         changeDisplay(layer, startmode)
-                        console.log(feature.properties.name, startmode)
 
-                        that.layerDict[addr] = [layer, startmode];
-
+                        // Change to objects
+                        that.layerDict[objjson.id] = [layer, startmode];
+                        console.log(addr)
                         that.mainMap.closePopup();
 
                         layer.on('click', function (e) {
-
-                                                 
-
-                            // Saves having to make a link popup until it's clicked on anyway
-                            if (first_dict[feature.properties.id] == false) {
-                                first_dict[feature.properties.id] = makeLink(feature);
-                                // Add all children to the item
-                                var children = findChildren(feature.properties.id)
-                                var j
-
-                                for(j in children){
-                                    putOnMap(children[j])
-                                }      
+                            if (!("link" in objjson)) {
+                                console.log("asdf")
+                                objjson.link = makeLink(objjson);
+                            
+                                if (objjson.subentities.length > 0){
+                                    objjson.subentities.forEach(j => {
+                                        objjson.loadedSubentities.push(findData(j))
+                                        //console.log(objjson.loadedSubentities)
+                                    })
+                                    objjson.loadedSubentities.forEach(j => {
+                                        console.log("about to put on map:"+j.id)
+                                        putOnMap(j)
+                                    })
+                                }
                             }
 
                             // Is a parent, not yet selected, so when it is clicked, it's popup stays the same, but we get it's children turn light green
                             if (that.layerDict[addr][1] == 1) {
                                 that.layerDict[addr][1] = 2;
-                                changeDisplay(layer, that.layerDict[addr][1]);
+                                changeDisplay(that.layerDict[addr][0], that.layerDict[addr][1]);
 
-                                if (that.childDict[addr]) {
-                                    for (var j in that.childDict[addr]) {
-                                        that.layerDict[that.childDict[addr][j]][1] = 4;
-                                        changeDisplay(that.layerDict[that.childDict[addr][j]][0], that.layerDict[that.childDict[addr][j]][1]);
-                                    }
+                
+                                if (objjson.subentities.length > 0) {
+                                    objjson.subentities.forEach(j => {
+                                            that.layerDict[j][1] = 4;
+                                            changeDisplay(that.layerDict[j][0], that.layerDict[j][1]);
+                                        
+                                    })
                                 }
                             }
 
-                                // Is a parent that has been selected, now that it is is selected again it will hide all children and go back to normal
+                            // Is a parent that has been selected, now that it is is selected again it will hide all children and go back to normal
                             else if (that.layerDict[addr][1] == 2) {
                                 that.layerDict[addr][1] = 1;
                                 changeDisplay(layer, that.layerDict[addr][1]);
 
-                                if (that.childDict[addr]) {
-                                    for (var j in that.childDict[addr]) {
-                                        console.log(that.layerDict[that.childDict[addr][j]])
-                                        that.layerDict[that.childDict[addr][j]][1] = 3;
-                                        changeDisplay(that.layerDict[that.childDict[addr][j]][0], that.layerDict[that.childDict[addr][j]][1]);
-                                    }
+                                if (objjson.subentities.length > 0) {
+                                    //for (var j in that.childDict[addr]) {
+                                    objjson.loadedSubentities.forEach(j => {
+                                            console.log("About to hide: "+j.id)
+                                            console.log(that.layerDict)
+                                            that.layerDict[j.id][1] = 3;
+                                            changeDisplay(that.layerDict[j.id][0], that.layerDict[j.id][1]);
+                                        
+                                    })
                                 }
                             }
 
@@ -233,12 +171,13 @@ class CarbonMap {
 
                             if (that.lock) {
                                 that.mainMap.closePopup();
-                                popup.setContent(first_dict[feature.properties.id]);
+                                popup.setContent(objjson.link);
                                 popup.setLatLng(e.latlng).openOn(that.mainMap);
                             }
 
                             else {
-                                popup.setContent(feature.properties.name);
+                                //popup.setContent(feature.properties.name);
+                                popup.setContent(objjson.name);
                             }
                         });
 
@@ -257,7 +196,8 @@ class CarbonMap {
                             if (!that.lock && that.layerDict[addr][1] != 3 && that.layerDict[addr][1] != 2) {
 
                                 popup.setLatLng(e.latlng).openOn(that.mainMap);
-                                popup.setContent(feature.properties.name);
+                                //popup.setContent(feature.properties.name);
+                                popup.setContent(objjson.name);
                             };
 
 
@@ -297,7 +237,7 @@ class CarbonMap {
 
 
         Object.keys(that.startList).forEach(function (addr, index) {
-            putOnMap(that.startList[index])
+            putOnMap(findData(that.startList[index]))
         });
 
         function findData(id){
@@ -309,80 +249,55 @@ class CarbonMap {
                 'dataType': "json",
                 'success': function (data) {
                     obj = data;
-                    console.log(obj)
+                },
+                "error": function (jqXHR, exception){
+                    console.log(jqXHR.responseText)
                 }
             });
             return obj
         }
 
-        function findShow(id){
-            var found = null
-            $.ajax({
-                'async': false,
-                'global': false,
-                'url': `https://data.cambridgecarbonmap.org/geojson/`+id+`.geojson`,
-                'dataType': "json",
-                'success': function (data) {
-                    if(data.features[0].properties.show){found = data.features[0].properties.id}
-                }
-            });
-            return found
-        }
-
-        function makeLink(feature) {
-
-            // var div = document.createElement("a");
-            // div.href = "reporting_entities/" + feature.properties.id;
-            // div.innerHTML = feature.properties.name;
-            // return div
+        //function makeLink(feature) {
+        function makeLink(objjson) {
 
             var div = document.createElement("div");
             div.align = "center"
 
-            var searcher = feature.properties.id;
-            var datajson = null;
+            var searcher = objjson.id;
             var own = true;
+            console.log(objjson)
             
-            while(true){
-                datajson = findData(searcher);
-                if(datajson == null){
-
-                    own = false;
-                    searcher = searcher.split(".");
-                    var popped = searcher.pop()
-
-                    if (searcher.length == 0){
-                        break;
-                    }
-
-                    searcher = searcher.join(".")
-                }
-                else{
-                    break
-                }
+            // Find closest parent to 
+            while (that.startList.indexOf(searcher) < 0){
+                console.log("Entered loop with:", searcher)
+                console.log(that.startList)
+                own = false;
+                searcher = searcher.split(".")
+                var popped = searcher.pop()
+                searcher = searcher.join(".")
             }
 
+            var datajson = findData(searcher)
+            var href_ = `reporting_entities/${searcher}`
 
-
-            // Change to be monthly?
-            var emissionsNumber = datajson.emissions[0].value * 15.6 + datajson.emissions[1].value * 21.3;
-            var toptext
-            var bottext = "Click here for more"
+            // NEED to display and normalise (for time) the most recent emissions number
+            
+            var toptext = `Emissions data is coming soon! </br> Click here if you want to hear more from us,</br> or involved with the project - we'd love to have you on board`
+            var bottext = "Click here"
+            href_ = "http://cambridgecarbonmap.org/"
             
             if(own){
-                toptext = `Emissions for ${feature.properties.name}:`
+                //toptext = `Emissions for ${datajson.name}:`
             } else{
-                toptext = `No stats for this building individually! Emissions for ${datajson.name}:`
+                //toptext = `No stats for this building individually! Emissions for ${datajson.name}:`
             }
 
             div.innerHTML = `
-                ${toptext}</br>
-                <p style="font-size:25px">${emissionsNumber}</p>
-                </br>
-                <a href = "reporting_entities/${feature.properties.id}">${bottext}</a>
+                <p style = "font-size:14px"><a href = "${href_}">${toptext}</a></p>
             `
+            //<p style="font-size:25px"><a href = "${href_}">${bottext}</a></p>
+            
             return div
         }
-
         }
     };
